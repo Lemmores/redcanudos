@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partidas · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Início</a>
+                <a href="partidas.html" class="active">Partidas</a>
+                <a href="tabela.html">Tabela</a>
+                <a href="estatisticas.html">Estatísticas</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="banner-hero">
+            <div class="banner-content">
+                <h1>HISTÓRICO DE PARTIDAS</h1>
+                <p class="banner-subtitle">RED CANUDOS · CONFIRA OS CONFRONTOS DA TEMPORADA</p>
+            </div>
+        </div>
+
+        <section class="sidebar-card" style="margin-bottom: 2rem;">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-gamepad"></i> TODOS OS CONFRONTOS</h2>
+            </div>
+
+            <div id="gridPartidas" class="admin-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+                <p class="loading-text">Carregando histórico de partidas...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <!-- FIREBASE SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function carregarPartidas() {
+            const container = document.getElementById('gridPartidas');
+            try {
+                const q = query(collection(db, "partidas"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    container.innerHTML = '<p class="empty-text">Nenhuma partida registrada ainda.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    const id = docSnap.id;
+
+                    const card = document.createElement('div');
+                    card.className = 'sidebar-card';
+                    card.style.display = 'flex';
+                    card.style.flexDirection = 'column';
+                    card.style.justifyContent = 'space-between';
+                    card.style.padding = '1.2rem';
+
+                    card.innerHTML = `
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:0.8rem; font-weight:700;">
+                                <span><i class="fa-regular fa-calendar"></i> ${p.data || '00/00/2026'}</span>
+                                <span><i class="fa-regular fa-clock"></i> ${p.duracao || '20:00'}</span>
+                            </div>
+                            <div style="display:flex; align-items:center; justify-content:space-between; text-align:center; margin:1rem 0;">
+                                <div style="flex:1;">
+                                    <strong style="font-size:0.95rem; display:block;">${p.homeTeam}</strong>
+                                </div>
+                                <div style="padding:0 0.8rem; font-size:1.4rem; font-weight:900; color:var(--red-primary);">
+                                    ${p.homeScore} - ${p.awayScore}
+                                </div>
+                                <div style="flex:1;">
+                                    <strong style="font-size:0.95rem; display:block;">${p.awayTeam}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="detalhes-partida.html?id=${id}" class="btn-submit" style="text-align:center; text-decoration:none; margin-top:1rem; font-size:0.85rem; padding:0.5rem;"><i class="fa-solid fa-eye"></i> Ver Detalhes da Partida</a>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error("Erro ao carregar partidas:", err);
+                container.innerHTML = '<p class="empty-text">Erro ao carregar partidas.</p>';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarPartidas);
+    </script>
+</body>
+</html>

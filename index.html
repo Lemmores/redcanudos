@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED CANUDOS · O Torneio da Matilha</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- CABEÇALHO / NAVBAR COMPLETA -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#presidentes">Presidentes</a>
+                <a href="#times">Times</a>
+                <a href="#jogadores">Jogadores</a>
+                <a href="partidas.html">Partidas</a>
+                <a href="#tabela">Tabela</a>
+                <a href="estatisticas.html">Estatísticas</a>
+                <a href="#cartas">Cartas</a>
+                <a href="#conteudo">Conteúdo</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container" id="inicio">
+
+        <!-- BANNER DE DESTAQUE SUPERIOR (HERO) -->
+        <div class="banner-hero">
+            <div class="banner-content">
+                <img src="Logo Canudos.png" alt="RED Canudos Emblem" class="hero-logo">
+                <h1>RED CANUDOS</h1>
+                <p class="banner-subtitle">O TORNEIO DA MATILHA · 2026</p>
+            </div>
+        </div>
+
+        <!-- LAYOUT DUAS COLUNAS (ESTILO CBLOW) -->
+        <div class="dashboard-grid">
+
+            <!-- COLUNA DA ESQUERDA: ÚLTIMOS RESULTADOS -->
+            <section class="results-section" id="partidas">
+                <div class="section-title-bar">
+                    <h2>ÚLTIMOS RESULTADOS</h2>
+                    <a href="#partidas" class="ver-mais">Ver mais</a>
+                </div>
+
+                <div class="matches-list">
+                    <!-- ITEM DE PARTIDA 1 -->
+                    <div class="match-row">
+                        <span class="match-date">Dom, 18/10</span>
+                        <div class="team team-home">
+                            <span class="team-name">Time Genérico A</span>
+                            <div class="team-icon">A</div>
+                        </div>
+                        <div class="match-score">0 – 1</div>
+                        <div class="team team-away">
+                            <div class="team-icon">B</div>
+                            <span class="team-name">Time Genérico B</span>
+                        </div>
+                        <a href="#" class="btn-details">VER DETALHES <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- ITEM DE PARTIDA 2 -->
+                    <div class="match-row">
+                        <span class="match-date">Dom, 18/10</span>
+                        <div class="team team-home">
+                            <span class="team-name">Time Genérico C</span>
+                            <div class="team-icon">C</div>
+                        </div>
+                        <div class="match-score">1 – 0</div>
+                        <div class="team team-away">
+                            <div class="team-icon">D</div>
+                            <span class="team-name">Time Genérico D</span>
+                        </div>
+                        <a href="#" class="btn-details">VER DETALHES <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- ITEM DE PARTIDA 3 -->
+                    <div class="match-row">
+                        <span class="match-date">Dom, 18/10</span>
+                        <div class="team team-home">
+                            <span class="team-name">Time Genérico E</span>
+                            <div class="team-icon">E</div>
+                        </div>
+                        <div class="match-score">1 – 0</div>
+                        <div class="team team-away">
+                            <div class="team-icon">F</div>
+                            <span class="team-name">Time Genérico F</span>
+                        </div>
+                        <a href="#" class="btn-details">VER DETALHES <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COLUNA DA DIREITA: NOTÍCIAS (FIREBASE) + CLASSIFICAÇÃO -->
+            <aside class="sidebar-section">
+
+                <!-- BLOCO NOTÍCIAS CARREGADAS DO FIREBASE -->
+                <div class="sidebar-card">
+                    <div class="section-title-bar">
+                        <h2>NOTÍCIAS</h2>
+                        <a href="#" class="ver-mais">Ver todas</a>
+                    </div>
+                    
+                    <div class="news-list" id="homeNewsList">
+                        <p class="loading-text">Carregando notícias...</p>
+                    </div>
+                </div>
+
+                <!-- BLOCO CLASSIFICAÇÃO RESUMIDA -->
+                <div class="sidebar-card margin-top" id="tabela">
+                    <div class="section-title-bar">
+                        <h2>CLASSIFICAÇÃO</h2>
+                        <a href="#tabela" class="ver-mais">Ver mais</a>
+                    </div>
+
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Time</th>
+                                <th class="text-right">V-D</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="pos">1</td>
+                                <td>
+                                    <div class="mini-team">
+                                        <div class="team-icon-sm">A</div>
+                                        <span>Time Genérico A</span>
+                                    </div>
+                                </td>
+                                <td class="text-right bold">4-0</td>
+                            </tr>
+                            <tr>
+                                <td class="pos">2</td>
+                                <td>
+                                    <div class="mini-team">
+                                        <div class="team-icon-sm">B</div>
+                                        <span>Time Genérico B</span>
+                                    </div>
+                                </td>
+                                <td class="text-right bold">3-1</td>
+                            </tr>
+                            <tr>
+                                <td class="pos">3</td>
+                                <td>
+                                    <div class="mini-team">
+                                        <div class="team-icon-sm">C</div>
+                                        <span>Time Genérico C</span>
+                                    </div>
+                                </td>
+                                <td class="text-right bold">2-2</td>
+                            </tr>
+                            <tr>
+                                <td class="pos">4</td>
+                                <td>
+                                    <div class="mini-team">
+                                        <div class="team-icon-sm">D</div>
+                                        <span>Time Genérico D</span>
+                                    </div>
+                                </td>
+                                <td class="text-right bold">0-4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <!-- SCRIPT DO MENU MOBILE E COMPORTAMENTOS GERAIS -->
+    <script src="script.js"></script>
+
+    <!-- INTEGRACÃO FIREBASE (BUSCA NOTÍCIAS EM TEMPO REAL) -->
+   <!-- INTEGRACÃO FIREBASE (RESULTADOS, TABELA E NOTÍCIAS EM TEMPO REAL) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. CARREGAR NOTÍCIAS
+        async function carregarNoticiasHome() {
+            const container = document.getElementById('homeNewsList');
+            try {
+                const q = query(collection(db, "noticias"), orderBy("createdAt", "desc"), limit(4));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p class="empty-text">Nenhuma notícia publicada ainda.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+
+                    const newsLink = document.createElement('a');
+                    newsLink.href = `noticia.html?id=${id}`;
+                    newsLink.className = 'news-item';
+                    newsLink.innerHTML = `
+                        <div class="news-thumb"><i class="fa-solid fa-newspaper"></i></div>
+                        <div class="news-info">
+                            <span class="news-tag">${data.categoria || 'NOTÍCIA'}</span>
+                            <h4>${data.titulo}</h4>
+                        </div>
+                    `;
+                    container.appendChild(newsLink);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar notícias:", error);
+            }
+        }
+
+        // 2. CARREGAR ÚLTIMOS RESULTADOS DAS PARTIDAS
+        async function carregarPartidasHome() {
+            const container = document.querySelector('.matches-list');
+            if (!container) return;
+
+            try {
+                const q = query(collection(db, "partidas"), orderBy("createdAt", "desc"), limit(5));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p class="empty-text">Nenhuma partida registrada ainda.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+
+                    const matchRow = document.createElement('div');
+                    matchRow.className = 'match-row';
+                    matchRow.innerHTML = `
+                        <span class="match-date">${data.data}</span>
+                        <div class="team team-home">
+                            <span class="team-name">${data.homeTeam}</span>
+                            <div class="team-icon">${data.homeTeam.charAt(0)}</div>
+                        </div>
+                        <div class="match-score">${data.homeScore} – ${data.awayScore}</div>
+                        <div class="team team-away">
+                            <div class="team-icon">${data.awayTeam.charAt(0)}</div>
+                            <span class="team-name">${data.awayTeam}</span>
+                        </div>
+                        <a href="#" class="btn-details">VER DETALHES <i class="fa-solid fa-arrow-right"></i></a>
+                    `;
+                    container.appendChild(matchRow);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar partidas:", error);
+            }
+        }
+
+        // 3. CARREGAR TABELA DE CLASSIFICAÇÃO EM TEMPO REAL
+        async function carregarTabelaHome() {
+            const tabelaBody = document.querySelector('.mini-table tbody');
+            if (!tabelaBody) return;
+
+            try {
+                const q = query(collection(db, "tabela"), orderBy("pontos", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) return;
+
+                tabelaBody.innerHTML = '';
+                let pos = 1;
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="pos">${pos}</td>
+                        <td>
+                            <div class="mini-team">
+                                <div class="team-icon-sm">${data.nome.charAt(0)}</div>
+                                <span>${data.nome}</span>
+                            </div>
+                        </td>
+                        <td class="text-right bold">${data.vitorias}-${data.derrotas}</td>
+                    `;
+                    tabelaBody.appendChild(tr);
+                    pos++;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar tabela:", error);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarNoticiasHome();
+            carregarPartidasHome();
+            carregarTabelaHome();
+        });
+    </script>
+</body>
+</html>

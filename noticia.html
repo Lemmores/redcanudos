@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notícia · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- CABEÇALHO / NAVBAR COMPLETA -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html#presidentes">Presidentes</a>
+                <a href="index.html#times">Times</a>
+                <a href="index.html#jogadores">Jogadores</a>
+                <a href="index.html#partidas">Partidas</a>
+                <a href="index.html#tabela">Tabela</a>
+                <a href="index.html#estatisticas">Estatísticas</a>
+                <a href="index.html#cartas">Cartas</a>
+                <a href="index.html#conteudo">Conteúdo</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL DA NOTÍCIA -->
+    <main class="main-container single-news-page">
+        <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar para o início</a>
+
+        <article class="news-article-card" id="newsContainer">
+            <!-- Indicador de Carregamento -->
+            <div class="loading-state" id="loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Carregando notícia...</p>
+            </div>
+
+            <!-- Conteúdo injetado via JavaScript -->
+            <div id="articleContent" style="display: none;">
+                <span class="news-category" id="newsCategory">NOTÍCIA</span>
+                <h1 class="news-title" id="newsTitle">Título da Notícia</h1>
+                <div class="news-meta">
+                    <span id="newsDate"><i class="fa-regular fa-calendar"></i> --/--/----</span>
+                    <span id="newsReadTime"><i class="fa-regular fa-clock"></i> Leitura rápida</span>
+                </div>
+                
+                <div class="news-cover" id="newsCoverContainer">
+                    <img src="" id="newsCover" alt="Capa da Notícia">
+                </div>
+
+                <div class="news-body" id="newsBody">
+                    <!-- Texto e parágrafos da notícia serão inseridos aqui -->
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <!-- FIREBASE MODULE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // As tuas chaves exatas do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Função para carregar a notícia com base no ID da URL (?id=xxxx)
+        async function loadNews() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const newsId = urlParams.get('id');
+
+            if (!newsId) {
+                document.getElementById('loading').innerHTML = "<p>Notícia não encontrada ou link inválido.</p>";
+                return;
+            }
+
+            try {
+                const docRef = doc(db, "noticias", newsId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    document.getElementById('newsCategory').innerText = data.categoria || "NOTÍCIA";
+                    document.getElementById('newsTitle').innerText = data.titulo;
+                    document.getElementById('newsDate').innerHTML = `<i class="fa-regular fa-calendar"></i> ${data.data || "Recente"}`;
+                    document.getElementById('newsBody').innerHTML = data.conteudo;
+
+                    if (data.imagemUrl && data.imagemUrl.trim() !== "") {
+                        document.getElementById('newsCover').src = data.imagemUrl;
+                        document.getElementById('newsCoverContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('newsCoverContainer').style.display = 'none';
+                    }
+
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('articleContent').style.display = 'block';
+                } else {
+                    document.getElementById('loading').innerHTML = "<p>Esta notícia não existe ou foi removida.</p>";
+                }
+            } catch (error) {
+                console.error("Erro ao carregar notícia:", error);
+                document.getElementById('loading').innerHTML = "<p>Erro ao carregar a notícia. Tente novamente mais tarde.</p>";
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadNews);
+    </script>
+</body>
+</html>

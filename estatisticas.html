@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html#presidentes">Presidentes</a>
+                <a href="index.html#times">Times</a>
+                <a href="index.html#jogadores">Jogadores</a>
+                <a href="index.html#partidas">Partidas</a>
+                <a href="index.html#tabela">Tabela</a>
+                <a href="estatisticas.html" class="active">Estatísticas</a>
+                <a href="index.html#cartas">Cartas</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="banner-hero">
+            <div class="banner-content">
+                <h1>ESTATÍSTICAS DA LIGA</h1>
+                <p class="banner-subtitle">RED CANUDOS · MÉTRICAS DA TEMPORADA</p>
+            </div>
+        </div>
+
+        <!-- CARDS DE MÉTRICAS GERAIS (ESTILO CBLOW) -->
+        <div class="admin-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="sidebar-card text-center">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Jogos</span>
+                <h2 id="metricJogos" style="font-size: 2.2rem; color: #fff; margin-top: 0.3rem;">0</h2>
+            </div>
+            <div class="sidebar-card text-center">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Abates Totais</span>
+                <h2 id="metricAbates" style="font-size: 2.2rem; color: var(--red-primary); margin-top: 0.3rem;">0</h2>
+            </div>
+            <div class="sidebar-card text-center">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Jogo Mais Longo</span>
+                <div id="metricJogoLongo" style="margin-top: 0.4rem;">
+                    <h3 style="font-size: 1.1rem; color: #fff; margin: 0;">—</h3>
+                    <small style="color: var(--text-muted); font-size: 0.75rem;">—</small>
+                </div>
+            </div>
+            <div class="sidebar-card text-center">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Jogo Mais Curto</span>
+                <div id="metricJogoCurto" style="margin-top: 0.4rem;">
+                    <h3 style="font-size: 1.1rem; color: #fff; margin: 0;">—</h3>
+                    <small style="color: var(--text-muted); font-size: 0.75rem;">—</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYOUT DE DUAS COLUNAS: RANKING DE JOGADORES + POPULARIDADE DE CAMPEÕES -->
+        <div class="dashboard-grid">
+            
+            <!-- RANKING DE JOGADORES -->
+            <section class="sidebar-card">
+                <div class="section-title-bar">
+                    <h2><i class="fa-solid fa-trophy"></i> RANKING DE JOGADORES</h2>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Total na temporada</span>
+                </div>
+
+                <!-- CAMPO DE BUSCA -->
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="inputSearchPlayer" placeholder="Buscar jogador ou campeão..." style="width: 100%; padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                </div>
+
+                <!-- FILTROS POR ABA -->
+                <div class="admin-tabs" style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                    <button class="tab-btn active filter-btn" data-filter="abates">Abates</button>
+                    <button class="tab-btn filter-btn" data-filter="assistencias">Assistências</button>
+                    <button class="tab-btn filter-btn" data-filter="kda">KDA</button>
+                    <button class="tab-btn filter-btn" data-filter="mortes">Mortes</button>
+                </div>
+
+                <table class="mini-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jogador</th>
+                            <th class="text-right">Campeão Favorito</th>
+                            <th class="text-right" id="thMetricLabel">Abates</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsBody">
+                        <tr><td colspan="4" class="loading-text">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- CAMPEÕES MAIS JOGADOS & BANIDOS -->
+            <aside class="sidebar-card">
+                <div class="section-title-bar">
+                    <h2><i class="fa-solid fa-shield-halved"></i> CAMPEÕES & BANS</h2>
+                </div>
+
+                <!-- CAMPO DE BUSCA CAMPEÕES -->
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="inputSearchChamp" placeholder="Buscar campeão..." style="width: 100%; padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                </div>
+
+                <table class="mini-table">
+                    <thead>
+                        <tr>
+                            <th>Campeão</th>
+                            <th class="text-right">Picks</th>
+                            <th class="text-right">Bans</th>
+                        </tr>
+                    </thead>
+                    <tbody id="championsBody">
+                        <tr><td colspan="3" class="loading-text">Carregando campeões...</td></tr>
+                    </tbody>
+                </table>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <!-- INTEGRAÇÃO FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let jogadoresData = [];
+        let campeoesPicks = {};
+        let campeoesBans = {};
+        let filtroAtual = 'abates';
+
+        // Converte string mm:ss para segundos totais
+        function tempoParaSegundos(tempoStr) {
+            if (!tempoStr || !tempoStr.includes(':')) return 1200;
+            const partes = tempoStr.split(':');
+            return (parseInt(partes[0]) || 0) * 60 + (parseInt(partes[1]) || 0);
+        }
+
+        async function carregarDadosCompletos() {
+            try {
+                // 1. Busca Partidas para métricas de tempo
+                const snapPartidas = await getDocs(collection(db, "partidas"));
+                const totalJogos = snapPartidas.size;
+                document.getElementById('metricJogos').innerText = totalJogos;
+
+                let jogoLongo = { tempo: '00:00', segs: 0, timeA: '', timeB: '' };
+                let jogoCurto = { tempo: '99:99', segs: 999999, timeA: '', timeB: '' };
+
+                snapPartidas.forEach(docSnap => {
+                    const p = docSnap.data();
+                    const dur = p.duracao || '20:00';
+                    const segs = tempoParaSegundos(dur);
+
+                    if (segs > jogoLongo.segs) {
+                        jogoLongo = { tempo: dur, segs: segs, timeA: p.homeTeam, timeB: p.awayTeam };
+                    }
+                    if (segs < jogoCurto.segs) {
+                        jogoCurto = { tempo: dur, segs: segs, timeA: p.homeTeam, timeB: p.awayTeam };
+                    }
+                });
+
+                if (totalJogos > 0) {
+                    document.getElementById('metricJogoLongo').innerHTML = `<h3 style="font-size:1.1rem; color:#fff; font-weight:900;">${jogoLongo.tempo}</h3><small style="color:var(--text-muted);">${jogoLongo.timeA} x ${jogoLongo.timeB}</small>`;
+                    document.getElementById('metricJogoCurto').innerHTML = `<h3 style="font-size:1.1rem; color:#fff; font-weight:900;">${jogoCurto.tempo}</h3><small style="color:var(--text-muted);">${jogoCurto.timeA} x ${jogoCurto.timeB}</small>`;
+                }
+
+                // 2. Busca Bans do Banco
+                const snapBans = await getDocs(collection(db, "estatisticas_bans"));
+                campeoesBans = {};
+                snapBans.forEach(docSnap => {
+                    const b = docSnap.data();
+                    campeoesBans[b.nome] = b.qtd || 0;
+                });
+
+                // 3. Busca Estatísticas dos Jogadores
+                const snapJogadores = await getDocs(collection(db, "estatisticas_jogadores"));
+                jogadoresData = [];
+                campeoesPicks = {};
+                let totalAbatesLiga = 0;
+
+                snapJogadores.forEach(docSnap => {
+                    const d = docSnap.data();
+                    jogadoresData.push(d);
+
+                    totalAbatesLiga += (d.abates || 0);
+
+                    if (d.campeao && d.campeao !== 'Geral') {
+                        campeoesPicks[d.campeao] = (campeoesPicks[d.campeao] || 0) + 1;
+                    }
+                });
+
+                document.getElementById('metricAbates').innerText = totalAbatesLiga;
+
+                renderizarRanking();
+                renderizarCampeoes();
+
+            } catch (err) {
+                console.error("Erro ao carregar estatísticas:", err);
+            }
+        }
+
+        function renderizarRanking() {
+            const body = document.getElementById('statsBody');
+            const searchVal = document.getElementById('inputSearchPlayer').value.toLowerCase().trim();
+            document.getElementById('thMetricLabel').innerText = filtroAtual.toUpperCase();
+
+            let listaFiltrada = jogadoresData.filter(p => 
+                (p.nick && p.nick.toLowerCase().includes(searchVal)) || 
+                (p.campeao && p.campeao.toLowerCase().includes(searchVal))
+            );
+
+            listaFiltrada.sort((a, b) => (b[filtroAtual] || 0) - (a[filtroAtual] || 0));
+
+            if (listaFiltrada.length === 0) {
+                body.innerHTML = '<tr><td colspan="4" class="empty-text">Nenhum jogador encontrado.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = '';
+            let pos = 1;
+
+            listaFiltrada.forEach(p => {
+                const tr = document.createElement('tr');
+                let valDisplay = p[filtroAtual] || 0;
+
+                tr.innerHTML = `
+                    <td class="pos">${pos}</td>
+                    <td><strong>${p.nick}</strong></td>
+                    <td class="text-right" style="color:var(--text-muted);">${p.campeao || '—'}</td>
+                    <td class="text-right bold" style="color:var(--red-primary);">${valDisplay}</td>
+                `;
+                body.appendChild(tr);
+                pos++;
+            });
+        }
+
+        function renderizarCampeoes() {
+            const body = document.getElementById('championsBody');
+            const searchVal = document.getElementById('inputSearchChamp').value.toLowerCase().trim();
+
+            const todosCampeoesSet = new Set([...Object.keys(campeoesPicks), ...Object.keys(campeoesBans)]);
+            let listaCamp = Array.from(todosCampeoesSet)
+                .map(nome => ({
+                    nome,
+                    picks: campeoesPicks[nome] || 0,
+                    bans: campeoesBans[nome] || 0
+                }))
+                .filter(c => c.nome.toLowerCase().includes(searchVal));
+
+            listaCamp.sort((a, b) => (b.picks + b.bans) - (a.picks + a.bans));
+
+            if (listaCamp.length === 0) {
+                body.innerHTML = '<tr><td colspan="3" class="empty-text">Nenhum campeão registrado.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = '';
+            listaCamp.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${c.nome}</strong></td>
+                    <td class="text-right bold" style="color:#fff;">${c.picks}</td>
+                    <td class="text-right bold" style="color:var(--red-primary);">${c.bans}</td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        // EVENTOS DE FILTRO
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                filtroAtual = e.target.getAttribute('data-filter');
+                renderizarRanking();
+            });
+        });
+
+        document.getElementById('inputSearchPlayer').addEventListener('input', renderizarRanking);
+        document.getElementById('inputSearchChamp').addEventListener('input', renderizarCampeoes);
+
+        window.addEventListener('DOMContentLoaded', carregarDadosCompletos);
+    </script>
+</body>
+</html>

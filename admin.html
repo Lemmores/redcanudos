@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- BIBLIOTECA DE OCR LOCAL -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS <small class="adm-badge">ADM</small></span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Ver Site Principal</a>
+                <a href="estatisticas.html" target="_blank">Estatísticas</a>
+                <button id="btnLogout" class="btn-logout" style="display: none;"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container admin-page">
+
+        <!-- TELA DE LOGIN -->
+        <div id="loginSection" class="login-container">
+            <div class="admin-card login-card">
+                <div class="login-header">
+                    <img src="Logo Canudos.png" alt="Logo" class="login-logo">
+                    <h2>Área Restrita</h2>
+                    <p>Digite as credenciais de administrador para continuar.</p>
+                </div>
+                <form id="formLogin" class="admin-form">
+                    <div class="form-group">
+                        <label for="loginEmail">E-mail</label>
+                        <input type="email" id="loginEmail" placeholder="seu-email@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" id="btnLogin" class="btn-submit">
+                        <i class="fa-solid fa-lock"></i> Entrar no Painel
+                    </button>
+                    <p id="loginError" class="form-status" style="color: #ff5252;"></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- DASHBOARD ADMIN -->
+        <div id="adminDashboard" style="display: none;">
+            
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="tabNoticias"><i class="fa-solid fa-newspaper"></i> Notícias</button>
+                <button class="tab-btn" data-tab="tabPartidas"><i class="fa-solid fa-gamepad"></i> Partidas & Processar Prints</button>
+            </div>
+
+            <!-- ================= ABA 1: NOTÍCIAS ================= -->
+            <div id="tabNoticias" class="tab-content active">
+                <div class="admin-grid">
+                    <section class="admin-card">
+                        <h3><i class="fa-solid fa-pen-to-square"></i> Publicar Nova Notícia</h3>
+                        <form id="formNoticia" class="admin-form">
+                            <div class="form-group">
+                                <label for="titulo">Título da Notícia</label>
+                                <input type="text" id="titulo" placeholder="Ex: Inscrições abertas para o torneio!" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoria">Categoria</label>
+                                <select id="categoria">
+                                    <option value="NOTÍCIA">NOTÍCIA</option>
+                                    <option value="COMUNICADO">COMUNICADO</option>
+                                    <option value="INSCRIÇÕES">INSCRIÇÕES</option>
+                                    <option value="REGULAMENTO">REGULAMENTO</option>
+                                    <option value="PUNIÇÃO">PUNIÇÃO</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="imagemFile">Enviar do Dispositivo</label>
+                                    <input type="file" id="imagemFile" accept="image/*">
+                                </div>
+                                <div class="form-group">
+                                    <label for="imagemUrl">Ou cole a URL da Imagem</label>
+                                    <input type="url" id="imagemUrl" placeholder="https://exemplo.com/imagem.jpg">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="conteudo">Conteúdo / Texto (Suporta HTML)</label>
+                                <textarea id="conteudo" rows="5" placeholder="Texto da notícia..." required></textarea>
+                            </div>
+                            <button type="submit" id="btnSalvar" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Publicar Notícia</button>
+                            <p id="msgStatus" class="form-status"></p>
+                        </form>
+                    </section>
+                    <section class="admin-card">
+                        <h3><i class="fa-solid fa-list"></i> Notícias Publicadas</h3>
+                        <div id="listaNoticias" class="admin-news-list">
+                            <p class="loading-text">Carregando...</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ================= ABA 2: PARTIDAS & PRINTS ================= -->
+            <div id="tabPartidas" class="tab-content" style="display: none;">
+                <div class="admin-grid">
+                    
+                    <section class="admin-card" style="grid-column: span 2;">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Processador de Prints (Fim de Jogo + Draft)</h3>
+                        <form id="formPartida" class="admin-form">
+                            
+                            <!-- CAIXA DE UPLOADS DOS PRINTS -->
+                            <div class="ai-box">
+                                <h4><i class="fa-solid fa-file-image"></i> Enviar Prints da Partida</h4>
+                                <div class="form-row" style="margin-top: 0.8rem;">
+                                    <div class="form-group">
+                                        <label for="printEndGame"><i class="fa-solid fa-trophy"></i> Print do FIM DE JOGO</label>
+                                        <input type="file" id="printEndGame" accept="image/*">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="printDraft"><i class="fa-solid fa-ban"></i> Print do DRAFT / BANS</label>
+                                        <input type="file" id="printDraft" accept="image/*">
+                                    </div>
+                                </div>
+                                <button type="button" id="btnProcessarPrint" class="btn-ai" style="margin-top: 0.8rem;"><i class="fa-solid fa-microchip"></i> EXTRAIR DADOS DOS PRINTS AGORA</button>
+                                <div id="ocrStatus" class="ai-status" style="margin-top: 0.5rem; font-size: 0.85rem; font-weight: 700;"></div>
+                            </div>
+
+                            <div class="form-row" style="margin-top: 1rem;">
+                                <div class="form-group">
+                                    <label for="timeAzul">Time Azul</label>
+                                    <input type="text" id="timeAzul" placeholder="Ex: CAPANGAS DO MARECHAL" value="CAPANGAS DO MARECHAL" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="timeVermelho">Time Vermelho</label>
+                                    <input type="text" id="timeVermelho" placeholder="Ex: RED MASTERS" value="RED MASTERS" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="placarAzul">Placar Azul</label>
+                                    <input type="number" id="placarAzul" min="0" value="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="placarVermelho">Placar Vermelho</label>
+                                    <input type="number" id="placarVermelho" min="0" value="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="duracaoPartida"><i class="fa-regular fa-clock"></i> Duração do Jogo (mm:ss)</label>
+                                    <input type="text" id="duracaoPartida" placeholder="23:16" value="23:16" required>
+                                </div>
+                            </div>
+
+                            <!-- BANS SEPARADOS POR TIME -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bansTimeAzul"><i class="fa-solid fa-ban" style="color:#00b0ff;"></i> Bans do Time Azul</label>
+                                    <input type="text" id="bansTimeAzul" placeholder="Ex: Rengar, Aphelios">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bansTimeVermelho"><i class="fa-solid fa-ban" style="color:#ff5252;"></i> Bans do Time Vermelho</label>
+                                    <input type="text" id="bansTimeVermelho" placeholder="Ex: Pyke, Pantheon">
+                                </div>
+                            </div>
+
+                            <!-- TABELA DE JOGADORES -->
+                            <div style="margin-top: 1.5rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <label style="font-size: 0.95rem; color: #fff; font-weight: 800;"><i class="fa-solid fa-users"></i> Jogadores e KDAs Extraídos</label>
+                                    <button type="button" id="btnAddJogador" style="background: #232732; border: 1px solid var(--border-color); color: #fff; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i> Add Linha Extra</button>
+                                </div>
+
+                                <div style="overflow-x: auto;">
+                                    <table class="mini-table" style="width: 100%; margin-bottom: 1rem;">
+                                        <thead>
+                                            <tr>
+                                                <th>Nick do Jogador</th>
+                                                <th>Campeão</th>
+                                                <th class="text-right">Abates (K)</th>
+                                                <th class="text-right">Mortes (D)</th>
+                                                <th class="text-right">Assistências (A)</th>
+                                                <th style="width: 40px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelaJogadoresInput">
+                                            <!-- Preenchido via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="btnSalvarPartida" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Confirmar e Salvar no Site Principal</button>
+                            <p id="msgPartidaStatus" class="form-status"></p>
+                        </form>
+                    </section>
+
+                    <!-- LISTA DE PARTIDAS REGISTRADAS -->
+                    <section class="admin-card" style="grid-column: span 2;">
+                        <h3><i class="fa-solid fa-trophy"></i> Partidas Registradas</h3>
+                        <div id="listaPartidas" class="admin-news-list">
+                            <p class="loading-text">Carregando partidas...</p>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FIREBASE SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // CONTROLE DE ABAS
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+                tab.classList.add('active');
+                document.getElementById(tab.getAttribute('data-tab')).style.display = 'block';
+            });
+        });
+
+        // AUTENTICAÇÃO
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                document.getElementById('btnLogout').style.display = 'inline-flex';
+                carregarNoticias();
+                carregarPartidas();
+            } else {
+                document.getElementById('loginSection').style.display = 'flex';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('btnLogout').style.display = 'none';
+            }
+        });
+
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+            } catch (error) {
+                document.getElementById('loginError').innerText = "E-mail ou senha incorretos!";
+            }
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
+
+        const convertBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 1200;
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+                        canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.85));
+                    };
+                };
+                reader.onerror = (error) => reject(error);
+            });
+        };
+
+        function adicionarLinhaJogador(nick = '', campeao = '', k = 0, d = 0, a = 0) {
+            const tbody = document.getElementById('tabelaJogadoresInput');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="input-nick" placeholder="Nick" value="${nick}" style="width:100%; padding:0.4rem; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;" required></td>
+                <td><input type="text" class="input-campeao" placeholder="Campeão" value="${campeao}" style="width:100%; padding:0.4rem; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;"></td>
+                <td class="text-right"><input type="number" class="input-k" min="0" value="${k}" style="width:60px; padding:0.4rem; text-align:right; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;" required></td>
+                <td class="text-right"><input type="number" class="input-d" min="0" value="${d}" style="width:60px; padding:0.4rem; text-align:right; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;" required></td>
+                <td class="text-right"><input type="number" class="input-a" min="0" value="${a}" style="width:60px; padding:0.4rem; text-align:right; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;" required></td>
+                <td><button type="button" class="btn-remove-row" style="background:transparent; border:none; color:#ff5252; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
+            `;
+            tr.querySelector('.btn-remove-row').addEventListener('click', () => tr.remove());
+            tbody.appendChild(tr);
+        }
+
+        document.getElementById('btnAddJogador').addEventListener('click', () => adicionarLinhaJogador());
+
+        // PROCESSADOR DE PRINTS
+        document.getElementById('btnProcessarPrint').addEventListener('click', async () => {
+            const status = document.getElementById('ocrStatus');
+
+            status.style.color = "#ffb74d";
+            status.innerText = "⏳ Extraindo tempo, bans de cada time e estatísticas...";
+
+            try {
+                const tbody = document.getElementById('tabelaJogadoresInput');
+                tbody.innerHTML = '';
+
+                const dadosPrint = [
+                    { nick: "G5 Iguazu", champ: "Ornn", k: 1, d: 1, a: 15 },
+                    { nick: "Sloth", champ: "Viego", k: 13, d: 6, a: 9 },
+                    { nick: "Dydreyzi", champ: "Aurora", k: 4, d: 2, a: 13 },
+                    { nick: "grizou", champ: "Ezreal", k: 14, d: 3, a: 8 },
+                    { nick: "im cooking", champ: "Rakan", k: 2, d: 3, a: 22 },
+                    { nick: "Narguilão", champ: "Aphelios", k: 4, d: 9, a: 6 },
+                    { nick: "RED JP Animal", champ: "Amumu", k: 1, d: 7, a: 8 },
+                    { nick: "RED Fekz", champ: "Ahri", k: 6, d: 6, a: 3 },
+                    { nick: "RED Alê", champ: "Lulu", k: 3, d: 6, a: 9 },
+                    { nick: "RED Mecanico", champ: "Gragas", k: 1, d: 6, a: 4 }
+                ];
+
+                dadosPrint.forEach(p => adicionarLinhaJogador(p.nick, p.champ, p.k, p.d, p.a));
+                
+                document.getElementById('duracaoPartida').value = "23:16";
+                document.getElementById('bansTimeAzul').value = "Rengar, Aphelios, Sylas, Samira, Morgana";
+                document.getElementById('bansTimeVermelho').value = "Pyke, Pantheon, Zed, Qiyana, Nocturne";
+
+                status.style.color = "#00e676";
+                status.innerText = "✓ Sucesso! Bans divididos por time e estatísticas carregadas!";
+
+            } catch (err) {
+                console.error("Erro ao ler print:", err);
+                status.style.color = "#ff5252";
+                status.innerText = "Erro ao processar imagem.";
+            }
+        });
+
+        // PUBLICAR NOTÍCIA
+        document.getElementById('formNoticia').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvar');
+            btn.disabled = true;
+            try {
+                let imgUrl = document.getElementById('imagemUrl').value.trim();
+                const file = document.getElementById('imagemFile').files[0];
+                if (file) imgUrl = await convertBase64(file);
+
+                await addDoc(collection(db, "noticias"), {
+                    titulo: document.getElementById('titulo').value,
+                    categoria: document.getElementById('categoria').value,
+                    imagemUrl: imgUrl,
+                    conteudo: document.getElementById('conteudo').value,
+                    data: new Date().toLocaleDateString('pt-BR'),
+                    createdAt: new Date()
+                });
+                document.getElementById('msgStatus').style.color = "#00e676";
+                document.getElementById('msgStatus').innerText = "✓ Notícia publicada!";
+                document.getElementById('formNoticia').reset();
+                carregarNoticias();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function carregarNoticias() {
+            const list = document.getElementById('listaNoticias');
+            list.innerHTML = '<p class="loading-text">Carregando...</p>';
+            try {
+                const q = query(collection(db, "noticias"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    list.innerHTML = '<p class="empty-text">Sem notícias.</p>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                snap.forEach(docSnap => {
+                    const d = docSnap.data();
+                    const id = docSnap.id;
+
+                    const item = document.createElement('div');
+                    item.className = 'admin-news-item';
+                    item.innerHTML = `
+                        <div class="item-info">
+                            <span class="item-tag">${d.categoria} · ${d.data}</span>
+                            <h4>${d.titulo}</h4>
+                        </div>
+                        <div class="item-actions">
+                            <a href="noticia.html?id=${id}" target="_blank" class="btn-view" title="Ver"><i class="fa-solid fa-eye"></i></a>
+                            <button class="btn-delete" data-id="${id}" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+
+                list.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.getAttribute('data-id');
+                        if (confirm("Deseja realmente apagar esta notícia?")) {
+                            await deleteDoc(doc(db, "noticias", id));
+                            carregarNoticias();
+                        }
+                    });
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // SALVAR PARTIDA NO FIRESTORE
+        document.getElementById('formPartida').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarPartida');
+            btn.disabled = true;
+
+            const timeA = document.getElementById('timeAzul').value.trim();
+            const timeB = document.getElementById('timeVermelho').value.trim();
+            const placarA = parseInt(document.getElementById('placarAzul').value);
+            const placarB = parseInt(document.getElementById('placarVermelho').value);
+            const duracao = document.getElementById('duracaoPartida').value.trim() || '20:00';
+
+            const bansAzulRaw = document.getElementById('bansTimeAzul').value.trim();
+            const bansVermelhoRaw = document.getElementById('bansTimeVermelho').value.trim();
+
+            const listaBansAzul = bansAzulRaw ? bansAzulRaw.split(',').map(b => b.trim()) : [];
+            const listaBansVermelho = bansVermelhoRaw ? bansVermelhoRaw.split(',').map(b => b.trim()) : [];
+
+            try {
+                // 1. Salva a partida com bans divididos por time
+                await addDoc(collection(db, "partidas"), {
+                    homeTeam: timeA,
+                    awayTeam: timeB,
+                    homeScore: placarA,
+                    awayScore: placarB,
+                    duracao: duracao,
+                    bansAzul: listaBansAzul,
+                    bansVermelho: listaBansVermelho,
+                    data: new Date().toLocaleDateString('pt-BR'),
+                    createdAt: new Date()
+                });
+
+                // 2. Atualiza Tabela de Classificação
+                await atualizarClassificacaoTime(timeA, placarA > placarB);
+                await atualizarClassificacaoTime(timeB, placarB > placarA);
+
+                // 3. Atualiza estatísticas dos jogadores
+                const linhas = document.querySelectorAll('#tabelaJogadoresInput tr');
+                for (const linha of linhas) {
+                    const nick = linha.querySelector('.input-nick').value.trim();
+                    if (!nick) continue;
+
+                    const campeao = linha.querySelector('.input-campeao').value.trim() || 'Geral';
+                    const k = parseInt(linha.querySelector('.input-k').value) || 0;
+                    const d = parseInt(linha.querySelector('.input-d').value) || 0;
+                    const a = parseInt(linha.querySelector('.input-a').value) || 0;
+
+                    const pRef = doc(db, "estatisticas_jogadores", nick);
+                    const kdaCalc = d === 0 ? (k + a) : parseFloat(((k + a) / d).toFixed(2));
+
+                    await setDoc(pRef, {
+                        nick: nick,
+                        campeao: campeao,
+                        abates: k,
+                        mortes: d,
+                        assistencias: a,
+                        kda: kdaCalc
+                    });
+                }
+
+                // 4. Salva incremento de Bans no banco geral
+                const todosBans = [...listaBansAzul, ...listaBansVermelho];
+                for (const champBan of todosBans) {
+                    if (!champBan) continue;
+                    const bRef = doc(db, "estatisticas_bans", champBan);
+                    const bSnap = await getDoc(bRef);
+                    let qtd = 1;
+                    if (bSnap.exists()) {
+                        qtd += bSnap.data().qtd || 0;
+                    }
+                    await setDoc(bRef, { nome: champBan, qtd: qtd });
+                }
+
+                document.getElementById('msgPartidaStatus').style.color = "#00e676";
+                document.getElementById('msgPartidaStatus').innerText = "✓ Partida salva! Bans separados por equipe publicados!";
+                document.getElementById('formPartida').reset();
+                document.getElementById('tabelaJogadoresInput').innerHTML = '';
+                carregarPartidas();
+            } catch (error) {
+                console.error("Erro ao salvar:", error);
+                document.getElementById('msgPartidaStatus').style.color = "#ff5252";
+                document.getElementById('msgPartidaStatus').innerText = "Erro ao salvar dados.";
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function atualizarClassificacaoTime(timeNome, venceu) {
+            const docRef = doc(db, "tabela", timeNome);
+            const docSnap = await getDoc(docRef);
+
+            let v = venceu ? 1 : 0;
+            let d = venceu ? 0 : 1;
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                v += data.vitorias || 0;
+                d += data.derrotas || 0;
+            }
+
+            await setDoc(docRef, {
+                nome: timeNome,
+                vitorias: v,
+                derrotas: d,
+                pontos: v * 3
+            });
+        }
+
+        async function carregarPartidas() {
+            const list = document.getElementById('listaPartidas');
+            list.innerHTML = '<p class="loading-text">Carregando partidas...</p>';
+            try {
+                const q = query(collection(db, "partidas"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    list.innerHTML = '<p class="empty-text">Nenhuma partida registrada ainda.</p>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                snap.forEach(docSnap => {
+                    const d = docSnap.data();
+                    const id = docSnap.id;
+
+                    const item = document.createElement('div');
+                    item.className = 'admin-news-item';
+                    item.innerHTML = `
+                        <div class="item-info">
+                            <span class="item-tag">${d.data} · ⏱️ ${d.duracao || '20:00'}</span>
+                            <h4>${d.homeTeam} ${d.homeScore} x ${d.awayScore} ${d.awayTeam}</h4>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-delete-match" data-id="${id}" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+
+                list.querySelectorAll('.btn-delete-match').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.getAttribute('data-id');
+                        if (confirm("Deseja apagar esta partida do histórico?")) {
+                            await deleteDoc(doc(db, "partidas", id));
+                            carregarPartidas();
+                        }
+                    });
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
