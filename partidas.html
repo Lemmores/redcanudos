@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR PADRONIZADA -->
     <header class="navbar">
         <div class="nav-container">
             <div class="logo-brand">
@@ -18,11 +18,16 @@
             </div>
             <nav class="nav-links">
                 <a href="index.html">Início</a>
+                <a href="index.html#times">Times</a>
+                <a href="index.html#jogadores">Jogadores</a>
                 <a href="partidas.html" class="active">Partidas</a>
                 <a href="tabela.html">Tabela</a>
                 <a href="estatisticas.html">Estatísticas</a>
                 <a href="regras.html">Regras</a>
             </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
         </div>
     </header>
 
@@ -50,6 +55,8 @@
     <footer class="footer">
         <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
     </footer>
+
+    <script src="script.js"></script>
 
     <!-- FIREBASE SDKs -->
     <script type="module">
@@ -95,7 +102,7 @@
                     card.innerHTML = `
                         <div>
                             <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:0.8rem; font-weight:700;">
-                                <span><i class="fa-regular fa-calendar"></i> ${p.data || '00/00/2026'}</span>
+                                <span><i class="fa-regular fa-calendar"></i> ${p.data || ''}</span>
                                 <span><i class="fa-regular fa-clock"></i> ${p.duracao || '20:00'}</span>
                             </div>
                             <div style="display:flex; align-items:center; justify-content:space-between; text-align:center; margin:1rem 0;">
