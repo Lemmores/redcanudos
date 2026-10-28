@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Times · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR PADRONIZADA -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Início</a>
+                <a href="times.html" class="active">Times</a>
+                <a href="jogadores.html">Jogadores</a>
+                <a href="partidas.html">Partidas</a>
+                <a href="tabela.html">Tabela</a>
+                <a href="estatisticas.html">Estatísticas</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="banner-hero">
+            <div class="banner-content">
+                <h1>EQUIPES PARTICIPANTES</h1>
+                <p class="banner-subtitle">RED CANUDOS · OS CLUBES DA TEMPORADA</p>
+            </div>
+        </div>
+
+        <section class="sidebar-card" style="margin-bottom: 2rem;">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-shield-halved"></i> TIMES INSCRITOS</h2>
+            </div>
+
+            <!-- GRID DE TIMES -->
+            <div id="gridTimes" class="admin-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem;">
+                <p class="loading-text">Carregando equipes inscritas...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- FIREBASE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function carregarTimes() {
+            const container = document.getElementById('gridTimes');
+            try {
+                const querySnapshot = await getDocs(collection(db, "tabela"));
+
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p class="empty-text">Nenhum time inscrito até o momento.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                querySnapshot.forEach((docSnap) => {
+                    const time = docSnap.data();
+                    const nomeTime = time.nome || docSnap.id;
+                    const idSafe = encodeURIComponent(nomeTime);
+
+                    const card = document.createElement('a');
+                    card.href = `detalhes-time.html?time=${idSafe}`;
+                    card.className = 'sidebar-card';
+                    card.style.display = 'flex';
+                    card.style.flexDirection = 'column';
+                    card.style.alignItems = 'center';
+                    card.style.textAlign = 'center';
+                    card.style.textDecoration = 'none';
+                    card.style.padding = '2rem 1rem';
+                    card.style.transition = 'transform 0.2s, border-color 0.2s';
+
+                    card.onmouseover = () => { card.style.transform = 'translateY(-4px)'; card.style.borderColor = 'var(--red-primary)'; };
+                    card.onmouseout = () => { card.style.transform = 'translateY(0)'; card.style.borderColor = 'var(--border-color)'; };
+
+                    let logoHtml = '';
+                    if (time.logoUrl && time.logoUrl.trim() !== '') {
+                        logoHtml = `<img src="${time.logoUrl}" alt="${nomeTime}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 50%; border: 2px solid var(--red-primary); margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">`;
+                    } else {
+                        logoHtml = `<div style="width: 75px; height: 75px; background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: var(--red-primary); margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">${nomeTime.charAt(0)}</div>`;
+                    }
+
+                    card.innerHTML = `
+                        ${logoHtml}
+                        <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.4rem;">${nomeTime} ${time.tag ? `[${time.tag}]` : ''}</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Clique para ver o plantel</span>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error("Erro ao carregar times:", err);
+                container.innerHTML = '<p class="empty-text">Erro ao carregar lista de times.</p>';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarTimes);
+    </script>
+</body>
+</html>

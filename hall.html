@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Canudos · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hall-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .hall-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.8rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .hall-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--red-primary);
+        }
+        .hall-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--red-primary);
+        }
+        .champion-year-badge {
+            display: inline-block;
+            background: rgba(229,9,20,0.15);
+            color: var(--red-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR PADRONIZADA -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Início</a>
+                <a href="times.html">Times</a>
+                <a href="jogadores.html">Jogadores</a>
+                <a href="partidas.html">Partidas</a>
+                <a href="tabela.html">Tabela</a>
+                <a href="estatisticas.html">Estatísticas</a>
+                <a href="hall.html" class="active" style="color: var(--red-primary); font-weight: 800;"><i class="fa-solid fa-trophy"></i> Hall of Canudos</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="banner-hero">
+            <div class="banner-content">
+                <h1>HALL OF CANUDOS</h1>
+                <p class="banner-subtitle">A LENDÁRIA HISTÓRIA, OS CAMPEÕES E OS ÍCONES DO TORNEIO</p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 1: LENDAS & HOMENAGEADOS -->
+        <section class="sidebar-card" style="margin-bottom: 2.5rem;">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-crown" style="color: #ffd700;"></i> AS LENDAS DA MATILHA</h2>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Personalidades que moldaram a história, conquistaram glórias eternas ou deixaram sua marca registrada no torneio.</p>
+
+            <div class="hall-grid">
+                
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #ffd700; margin-bottom: 0.8rem;"><i class="fa-solid fa-chess-king"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Vitao</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">Primeiro Organizador & 1x Campeão</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">O visionário que deu o pontapé inicial em tudo e cravou seu nome na taça.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #00e676; margin-bottom: 0.8rem;"><i class="fa-solid fa-2"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Andrey</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">O Único Bicampeão 😭</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">O dono do feito histórico: bicampeão absoluto do torneio. Respeitem a lenda!</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #ffb74d; margin-bottom: 0.8rem;"><i class="fa-solid fa-shield"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Bsan</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">Capitão do Primeiro Campeão</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Ergueu a primeira taça da história pelo LNG em 2022/1.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #ff4081; margin-bottom: 0.8rem;"><i class="fa-solid fa-star"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Xulia</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">Referência, Campeã & Fundadora</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Mente brilhante por trás dos Capangas do Marechal e campeã incontestável.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #00b0ff; margin-bottom: 0.8rem;"><i class="fa-solid fa-fire"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Sloth</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">MVP Absoluto & Campeão</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Atuação impecável nos servidores, jogando em altíssimo nível e levando o título.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #ab47bc; margin-bottom: 0.8rem;"><i class="fa-solid fa-medal"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Sove</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">A Lenda dos 2 Vices</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Figura indispensável do campeonato, batendo na trave com estilo por duas vezes.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #26a69a; margin-bottom: 0.8rem;"><i class="fa-solid fa-bolt"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Kono</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">Jogador Referência & 1x Campeão</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Classe pura na Summoner's Rift e dono de uma estrela campeã.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #ffa726; margin-bottom: 0.8rem;"><i class="fa-solid fa-gem"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Kauas</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">Referência do Cunil & 1 Título</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Histórico, talentoso e dono de uma conquista inesquecível no torneio.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #78909c; margin-bottom: 0.8rem;"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Elder</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">Top Laner Emblemático</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">A rocha da top lane, marcando época com jogadas memoráveis.</p>
+                </div>
+
+                <div class="hall-card">
+                    <div style="font-size: 2rem; color: #ec407a; margin-bottom: 0.8rem;"><i class="fa-solid fa-face-laugh-squint"></i></div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem;">Duduzada</h3>
+                    <span style="color: var(--red-primary); font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.8rem;">O Homem que Venceu o Cuzinho do Rabeloko</span>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Uma vitória épica que jamais será esquecida pelos anais da Matilha.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: LINHA DO TEMPO DOS CAMPEÕES -->
+        <section class="sidebar-card">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-trophy" style="color: #ffd700;"></i> LINHA DO TEMPO & ELENCOS CAMPEÕES</h2>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">As equipes que levantaram o caneco e gravaram suas formações na história do RED Canudos.</p>
+
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                
+                <!-- 2025 -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem;">
+                    <span class="champion-year-badge">2025</span>
+                    <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem;">CAPANGAS DO MARECHAL</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;"><strong>Elenco Campeão:</strong> Moto Moto, Sloth, Andrey, Grizou, Xuliap</p>
+                </div>
+
+                <!-- 2024 -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem;">
+                    <span class="champion-year-badge">2024</span>
+                    <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem;">OLD CANIDS</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;"><strong>Elenco Campeão:</strong> Gijo, Lad, Drigo,Leobreck, Chagaz, Lord Afk (Ozeias)</p>
+                </div>
+
+                <!-- 2023 -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem;">
+                    <span class="champion-year-badge">2023</span>
+                    <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem;">ARTIC FOXES (AFX)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;"><strong>Elenco Campeão:</strong> Elder, Kono, Juger, Wud6aa,Roosevelt, Jlmk</p>
+                </div>
+
+                <!-- 2022/2 -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem;">
+                    <span class="champion-year-badge">2022 / 2º Split</span>
+                    <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem;">EXODIA</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;"><strong>Elenco Campeão:</strong> Vitao, Supremo, Andrey, Saulo (Red Canids Ao Contrário), Kauas</p>
+                </div>
+
+                <!-- 2022/1 -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem;">
+                    <span class="champion-year-badge">2022 / 1º Split</span>
+                    <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem;">LNG</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;"><strong>Elenco Campeão:</strong> Tyrael, Gardione, Yato, RED Animes (Mike Gala), Bsan (Capitão)</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

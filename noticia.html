@@ -3,14 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notícia · RED CANUDOS</title>
+    <title>Notícias · RED CANUDOS</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .news-card-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .news-card-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--red-primary);
+        }
+        .news-card-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 2.5rem;
+        }
+        .news-card-content {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+        .news-card-tag {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--red-primary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .news-card-title {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        .news-card-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- CABEÇALHO / NAVBAR COMPLETA -->
+    <!-- NAVBAR PADRONIZADA -->
     <header class="navbar">
         <div class="nav-container">
             <div class="logo-brand">
@@ -18,14 +75,14 @@
                 <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
             </div>
             <nav class="nav-links">
-                <a href="index.html#presidentes">Presidentes</a>
-                <a href="index.html#times">Times</a>
-                <a href="index.html#jogadores">Jogadores</a>
-                <a href="index.html#partidas">Partidas</a>
-                <a href="index.html#tabela">Tabela</a>
-                <a href="index.html#estatisticas">Estatísticas</a>
-                <a href="index.html#cartas">Cartas</a>
-                <a href="index.html#conteudo">Conteúdo</a>
+                <a href="index.html">Início</a>
+                <a href="noticias.html" class="active">Notícias</a>
+                <a href="times.html">Times</a>
+                <a href="jogadores.html">Jogadores</a>
+                <a href="partidas.html">Partidas</a>
+                <a href="tabela.html">Tabela</a>
+                <a href="estatisticas.html">Estatísticas</a>
+                <a href="hall.html"> Hall of Canudos</a>
                 <a href="regras.html">Regras</a>
             </nav>
             <div class="menu-toggle" id="menuToggle">
@@ -34,48 +91,52 @@
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL DA NOTÍCIA -->
-    <main class="main-container single-news-page">
-        <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar para o início</a>
+    <main class="main-container">
+        
+        <div class="banner-hero">
+            <div class="banner-content">
+                <h1>FEED DE NOTÍCIAS</h1>
+                <p class="banner-subtitle">RED CANUDOS · COMUNICADOS, NOVIDADES E COBERTURA DA LIGA</p>
+            </div>
+        </div>
 
-        <article class="news-article-card" id="newsContainer">
-            <!-- Indicador de Carregamento -->
-            <div class="loading-state" id="loading">
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <p>Carregando notícia...</p>
+        <section class="sidebar-card" style="margin-bottom: 2.5rem;">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-newspaper"></i> TODAS AS PUBLICAÇÕES</h2>
             </div>
 
-            <!-- Conteúdo injetado via JavaScript -->
-            <div id="articleContent" style="display: none;">
-                <span class="news-category" id="newsCategory">NOTÍCIA</span>
-                <h1 class="news-title" id="newsTitle">Título da Notícia</h1>
-                <div class="news-meta">
-                    <span id="newsDate"><i class="fa-regular fa-calendar"></i> --/--/----</span>
-                    <span id="newsReadTime"><i class="fa-regular fa-clock"></i> Leitura rápida</span>
-                </div>
-                
-                <div class="news-cover" id="newsCoverContainer">
-                    <img src="" id="newsCover" alt="Capa da Notícia">
-                </div>
-
-                <div class="news-body" id="newsBody">
-                    <!-- Texto e parágrafos da notícia serão inseridos aqui -->
-                </div>
+            <!-- FILTROS E BUSCA -->
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; margin-bottom: 1.5rem;">
+                <input type="text" id="inputSearchNews" placeholder="Buscar notícia..." style="flex: 1; min-width: 220px; padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                <select id="selectCategory" style="padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                    <option value="TODAS">Todas as Categorias</option>
+                    <option value="NOTÍCIA">NOTÍCIA</option>
+                    <option value="COMUNICADO">COMUNICADO</option>
+                    <option value="INSCRIÇÕES">INSCRIÇÕES</option>
+                    <option value="REGULAMENTO">REGULAMENTO</option>
+                    <option value="PUNIÇÃO">PUNIÇÃO</option>
+                </select>
             </div>
-        </article>
+
+            <!-- GRID DE NOTÍCIAS -->
+            <div id="gridNoticias" class="news-grid">
+                <p class="loading-text">Carregando notícias...</p>
+            </div>
+        </section>
+
     </main>
 
-    <!-- RODAPÉ -->
     <footer class="footer">
         <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
     </footer>
 
-    <!-- FIREBASE MODULE INTEGRATION -->
+    <script src="script.js"></script>
+
+    <!-- INTEGRAÇÃO FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // As tuas chaves exatas do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
             authDomain: "canudos-200c7.firebaseapp.com",
@@ -89,47 +150,83 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Função para carregar a notícia com base no ID da URL (?id=xxxx)
-        async function loadNews() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const newsId = urlParams.get('id');
+        let todasNoticias = [];
 
-            if (!newsId) {
-                document.getElementById('loading').innerHTML = "<p>Notícia não encontrada ou link inválido.</p>";
-                return;
-            }
-
+        async function carregarTodasNoticias() {
+            const container = document.getElementById('gridNoticias');
             try {
-                const docRef = doc(db, "noticias", newsId);
-                const docSnap = await getDoc(docRef);
+                const q = query(collection(db, "noticias"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-
-                    document.getElementById('newsCategory').innerText = data.categoria || "NOTÍCIA";
-                    document.getElementById('newsTitle').innerText = data.titulo;
-                    document.getElementById('newsDate').innerHTML = `<i class="fa-regular fa-calendar"></i> ${data.data || "Recente"}`;
-                    document.getElementById('newsBody').innerHTML = data.conteudo;
-
-                    if (data.imagemUrl && data.imagemUrl.trim() !== "") {
-                        document.getElementById('newsCover').src = data.imagemUrl;
-                        document.getElementById('newsCoverContainer').style.display = 'block';
-                    } else {
-                        document.getElementById('newsCoverContainer').style.display = 'none';
-                    }
-
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('articleContent').style.display = 'block';
-                } else {
-                    document.getElementById('loading').innerHTML = "<p>Esta notícia não existe ou foi removida.</p>";
+                if (snap.empty) {
+                    container.innerHTML = '<p class="empty-text">Nenhuma notícia publicada ainda.</p>';
+                    return;
                 }
-            } catch (error) {
-                console.error("Erro ao carregar notícia:", error);
-                document.getElementById('loading').innerHTML = "<p>Erro ao carregar a notícia. Tente novamente mais tarde.</p>";
+
+                todasNoticias = [];
+                snap.forEach(docSnap => {
+                    todasNoticias.push({
+                        id: docSnap.id,
+                        ...docSnap.data()
+                    });
+                });
+
+                renderizarNoticias();
+
+            } catch (err) {
+                console.error("Erro ao carregar notícias:", err);
+                container.innerHTML = '<p class="empty-text">Erro ao carregar feed de notícias.</p>';
             }
         }
 
-        window.addEventListener('DOMContentLoaded', loadNews);
+        function renderizarNoticias() {
+            const container = document.getElementById('gridNoticias');
+            const searchVal = document.getElementById('inputSearchNews').value.toLowerCase().trim();
+            const catVal = document.getElementById('selectCategory').value;
+
+            let filtradas = todasNoticias.filter(n => {
+                const matchTexto = (n.titulo && n.titulo.toLowerCase().includes(searchVal)) || 
+                                   (n.conteudo && n.conteudo.toLowerCase().includes(searchVal));
+                const matchCat = (catVal === 'TODAS') || (n.categoria === catVal);
+                return matchTexto && matchCat;
+            });
+
+            if (filtradas.length === 0) {
+                container.innerHTML = '<p class="empty-text">Nenhuma notícia encontrada para este filtro.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtradas.forEach(n => {
+                const card = document.createElement('a');
+                card.href = `noticia.html?id=${n.id}`;
+                card.className = 'news-card-item';
+
+                let thumbHtml = '';
+                if (n.imagemUrl && n.imagemUrl.trim() !== '') {
+                    thumbHtml = `<img src="${n.imagemUrl}" alt="${n.titulo}" class="news-card-thumb">`;
+                } else {
+                    thumbHtml = `<div class="news-card-thumb"><i class="fa-solid fa-newspaper"></i></div>`;
+                }
+
+                card.innerHTML = `
+                    ${thumbHtml}
+                    <div class="news-card-content">
+                        <div>
+                            <span class="news-card-tag">${n.categoria || 'NOTÍCIA'}</span>
+                            <h3 class="news-card-title">${n.titulo}</h3>
+                        </div>
+                        <span class="news-card-date"><i class="fa-regular fa-calendar"></i> ${n.data || 'Recente'}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        document.getElementById('inputSearchNews').addEventListener('input', renderizarNoticias);
+        document.getElementById('selectCategory').addEventListener('change', renderizarNoticias);
+
+        window.addEventListener('DOMContentLoaded', carregarTodasNoticias);
     </script>
 </body>
 </html>

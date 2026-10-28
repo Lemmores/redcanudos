@@ -58,6 +58,7 @@
             
             <div class="admin-tabs">
                 <button class="tab-btn active" data-tab="tabNoticias"><i class="fa-solid fa-newspaper"></i> Notícias</button>
+                <button class="tab-btn" data-tab="tabTimes"><i class="fa-solid fa-shield-halved"></i> Times & Plantel</button>
                 <button class="tab-btn" data-tab="tabPartidas"><i class="fa-solid fa-gamepad"></i> Partidas & Processar Prints</button>
             </div>
 
@@ -108,7 +109,69 @@
                 </div>
             </div>
 
-            <!-- ================= ABA 2: PARTIDAS & PRINTS ================= -->
+            <!-- ================= ABA 2: TIMES & JOGADORES ================= -->
+            <div id="tabTimes" class="tab-content" style="display: none;">
+                <div class="admin-grid">
+                    <section class="admin-card" style="grid-column: span 2;">
+                        <h3><i class="fa-solid fa-shield-halved"></i> Cadastrar ou Editar Equipe, Logo e Jogadores</h3>
+                        <form id="formCadastrarTime" class="admin-form" style="margin-top: 1rem;">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nomeNovoTime">Nome da Equipe</label>
+                                    <input type="text" id="nomeNovoTime" placeholder="Ex: Capangas do Marechal" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tagNovoTime">Tag / Sigla</label>
+                                    <input type="text" id="tagNovoTime" placeholder="Ex: CAP" maxlength="5">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="logoTimeFile">Logo do Time (Enviar do Dispositivo)</label>
+                                <input type="file" id="logoTimeFile" accept="image/*">
+                            </div>
+
+                            <!-- JOGADORES DA EQUIPE -->
+                            <div style="margin-top: 1.5rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <label style="font-size: 0.95rem; color: #fff; font-weight: 800;"><i class="fa-solid fa-users"></i> Jogadores do Plantel</label>
+                                    <button type="button" id="btnAddJogadorTime" style="background: #232732; border: 1px solid var(--border-color); color: #fff; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i> Add Jogador</button>
+                                </div>
+
+                                <div style="overflow-x: auto;">
+                                    <table class="mini-table" style="width: 100%; margin-bottom: 1rem;">
+                                        <thead>
+                                            <tr>
+                                                <th>Foto</th>
+                                                <th>Nick no LoL</th>
+                                                <th>Função (Top, JG...)</th>
+                                                <th>Link do OP.GG</th>
+                                                <th style="width: 40px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelaJogadoresTimeInput">
+                                            <!-- Preenchido via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="btnSalvarTime" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Salvar Time e Plantel</button>
+                            <p id="msgTimeStatus" class="form-status" style="margin-top: 0.5rem;"></p>
+                        </form>
+                    </section>
+
+                    <section class="admin-card" style="grid-column: span 2;">
+                        <h3><i class="fa-solid fa-list"></i> Times Inscritos na Liga</h3>
+                        <div id="listaTimesAdmin" class="admin-news-list" style="margin-top: 1rem;">
+                            <p class="loading-text">Carregando times...</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ================= ABA 3: PARTIDAS & PRINTS ================= -->
             <div id="tabPartidas" class="tab-content" style="display: none;">
                 <div class="admin-grid">
                     
@@ -237,6 +300,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let timesCadastradosCache = {};
+
         // CONTROLE DE ABAS
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(tab => {
@@ -255,6 +320,7 @@
                 document.getElementById('adminDashboard').style.display = 'block';
                 document.getElementById('btnLogout').style.display = 'inline-flex';
                 carregarNoticias();
+                carregarTimesAdmin();
                 carregarPartidas();
             } else {
                 document.getElementById('loginSection').style.display = 'flex';
@@ -295,6 +361,192 @@
                 reader.onerror = (error) => reject(error);
             });
         };
+
+        // ADICIONAR LINHA DE JOGADOR NO CADASTRO DE TIME
+        function adicionarLinhaJogadorTime(nick = '', funcao = '', opgg = '', fotoUrl = '') {
+            const tbody = document.getElementById('tabelaJogadoresTimeInput');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <input type="file" class="input-jogador-foto-file" accept="image/*" style="width: 130px; color: #fff; font-size: 0.75rem;">
+                    <input type="hidden" class="input-jogador-foto-url" value="${fotoUrl}">
+                    ${fotoUrl ? '<small style="color:#00e676; display:block;">Foto salva</small>' : ''}
+                </td>
+                <td><input type="text" class="input-jogador-nick" placeholder="Ex: Dydreyzi" value="${nick}" style="width:100%; padding:0.4rem; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;" required></td>
+                <td><input type="text" class="input-jogador-funcao" placeholder="Ex: Top, JG" value="${funcao}" style="width:100%; padding:0.4rem; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;"></td>
+                <td><input type="url" class="input-jogador-opgg" placeholder="https://www.op.gg/..." value="${opgg}" style="width:100%; padding:0.4rem; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; border-radius:4px;"></td>
+                <td><button type="button" class="btn-remove-row" style="background:transparent; border:none; color:#ff5252; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
+            `;
+            tr.querySelector('.btn-remove-row').addEventListener('click', () => tr.remove());
+            tbody.appendChild(tr);
+        }
+
+        document.getElementById('btnAddJogadorTime').addEventListener('click', () => adicionarLinhaJogadorTime());
+
+        // CADASTRAR OU EDITAR TIME
+        document.getElementById('formCadastrarTime').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarTime');
+            const nomeTimeInput = document.getElementById('nomeNovoTime');
+            const nomeTime = nomeTimeInput.value.trim();
+            const tagTime = document.getElementById('tagNovoTime').value.trim();
+            const fileLogo = document.getElementById('logoTimeFile').files[0];
+            const msg = document.getElementById('msgTimeStatus');
+
+            if (!nomeTime) return;
+
+            btn.disabled = true;
+            msg.style.color = "#ffb74d";
+            msg.innerText = "⏳ Salvando time e processando plantel...";
+
+            try {
+                const timeRef = doc(db, "tabela", nomeTime);
+                const timeSnap = await getDoc(timeRef);
+
+                let logoUrl = "";
+                if (fileLogo) {
+                    logoUrl = await convertBase64(fileLogo);
+                } else if (timeSnap.exists()) {
+                    logoUrl = timeSnap.data().logoUrl || "";
+                }
+
+                let vitorias = 0;
+                let derrotas = 0;
+                let pontos = 0;
+
+                if (timeSnap.exists()) {
+                    vitorias = timeSnap.data().vitorias || 0;
+                    derrotas = timeSnap.data().derrotas || 0;
+                    pontos = timeSnap.data().pontos || 0;
+                }
+
+                const linhasJogadores = document.querySelectorAll('#tabelaJogadoresTimeInput tr');
+                let plantel = [];
+
+                for (const linha of linhasJogadores) {
+                    const nick = linha.querySelector('.input-jogador-nick').value.trim();
+                    const funcao = linha.querySelector('.input-jogador-funcao').value.trim();
+                    const opgg = linha.querySelector('.input-jogador-opgg').value.trim();
+                    const fileInput = linha.querySelector('.input-jogador-foto-file');
+                    let fotoUrl = linha.querySelector('.input-jogador-foto-url').value.trim();
+
+                    if (fileInput.files && fileInput.files[0]) {
+                        fotoUrl = await convertBase64(fileInput.files[0]);
+                    }
+
+                    if (nick) {
+                        plantel.push({ nick, funcao, opgg, fotoUrl });
+                    }
+                }
+
+                await setDoc(timeRef, {
+                    nome: nomeTime,
+                    tag: tagTime,
+                    logoUrl: logoUrl,
+                    plantel: plantel,
+                    vitorias: vitorias,
+                    derrotas: derrotas,
+                    pontos: pontos
+                }, { merge: true });
+
+                msg.style.color = "#00e676";
+                msg.innerText = `✓ Time "${nomeTime}" atualizado com sucesso!`;
+                document.getElementById('formCadastrarTime').reset();
+                document.getElementById('tabelaJogadoresTimeInput').innerHTML = '';
+                nomeTimeInput.disabled = false;
+                carregarTimesAdmin();
+            } catch (err) {
+                console.error("Erro ao salvar time:", err);
+                msg.style.color = "#ff5252";
+                msg.innerText = "Erro ao salvar time.";
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function carregarTimesAdmin() {
+            const list = document.getElementById('listaTimesAdmin');
+            list.innerHTML = '<p class="loading-text">Carregando times...</p>';
+            try {
+                const snap = await getDocs(collection(db, "tabela"));
+                if (snap.empty) {
+                    list.innerHTML = '<p class="empty-text">Nenhum time cadastrado ainda.</p>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                timesCadastradosCache = {};
+
+                snap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const nome = data.nome || docSnap.id;
+                    timesCadastradosCache[nome] = data;
+                    const qtdJogadores = data.plantel ? data.plantel.length : 0;
+
+                    const item = document.createElement('div');
+                    item.className = 'admin-news-item';
+                    item.innerHTML = `
+                        <div class="item-info" style="display:flex; align-items:center; gap:0.8rem;">
+                            ${data.logoUrl ? `<img src="${data.logoUrl}" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">` : `<div style="width:35px; height:35px; background:var(--bg-main); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--red-primary);">${nome.charAt(0)}</div>`}
+                            <div>
+                                <span class="item-tag">Plantel: ${qtdJogadores} jogadores</span>
+                                <h4>${nome} ${data.tag ? `[${data.tag}]` : ''}</h4>
+                            </div>
+                        </div>
+                        <div class="item-actions" style="display:flex; gap:0.5rem;">
+                            <button class="btn-edit-time" data-nome="${nome}" title="Editar" style="background:#232732; border:1px solid var(--border-color); color:#fff; padding:0.4rem 0.6rem; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete-time" data-nome="${nome}" title="Excluir" style="background:transparent; border:none; color:#ff5252; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+
+                list.querySelectorAll('.btn-edit-time').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const nomeTime = e.currentTarget.getAttribute('data-nome');
+                        preencherFormularioEdicao(nomeTime);
+                    });
+                });
+
+                list.querySelectorAll('.btn-delete-time').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const nomeTime = e.currentTarget.getAttribute('data-nome');
+                        if (confirm(`Deseja remover o time "${nomeTime}" da liga?`)) {
+                            await deleteDoc(doc(db, "tabela", nomeTime));
+                            carregarTimesAdmin();
+                        }
+                    });
+                });
+
+            } catch (err) {
+                console.error("Erro ao carregar times admin:", err);
+            }
+        }
+
+        function preencherFormularioEdicao(nomeTime) {
+            const dados = timesCadastradosCache[nomeTime];
+            if (!dados) return;
+
+            document.getElementById('nomeNovoTime').value = dados.nome || nomeTime;
+            document.getElementById('tagNovoTime').value = dados.tag || '';
+            document.getElementById('nomeNovoTime').disabled = true;
+
+            const tbody = document.getElementById('tabelaJogadoresTimeInput');
+            tbody.innerHTML = '';
+
+            if (dados.plantel && dados.plantel.length > 0) {
+                dados.plantel.forEach(j => {
+                    adicionarLinhaJogadorTime(j.nick, j.funcao, j.opgg, j.fotoUrl);
+                });
+            }
+
+            document.querySelector('.tab-btn[data-tab="tabTimes"]').click();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const msg = document.getElementById('msgTimeStatus');
+            msg.style.color = "#ffb74d";
+            msg.innerText = `✏️ Editando time "${nomeTime}". Altere os dados abaixo e clique em Salvar.`;
+        }
 
         function adicionarLinhaJogador(nick = '', campeao = '', k = 0, d = 0, a = 0) {
             const tbody = document.getElementById('tabelaJogadoresInput');
@@ -448,7 +700,6 @@
             const listaBansVermelho = bansVermelhoRaw ? bansVermelhoRaw.split(',').map(b => b.trim()) : [];
 
             try {
-                // 1. Salva a partida com bans divididos por time
                 await addDoc(collection(db, "partidas"), {
                     homeTeam: timeA,
                     awayTeam: timeB,
@@ -461,11 +712,9 @@
                     createdAt: new Date()
                 });
 
-                // 2. Atualiza Tabela de Classificação
                 await atualizarClassificacaoTime(timeA, placarA > placarB);
                 await atualizarClassificacaoTime(timeB, placarB > placarA);
 
-                // 3. Atualiza estatísticas dos jogadores
                 const linhas = document.querySelectorAll('#tabelaJogadoresInput tr');
                 for (const linha of linhas) {
                     const nick = linha.querySelector('.input-nick').value.trim();
@@ -489,7 +738,6 @@
                     });
                 }
 
-                // 4. Salva incremento de Bans no banco geral
                 const todosBans = [...listaBansAzul, ...listaBansVermelho];
                 for (const champBan of todosBans) {
                     if (!champBan) continue;
@@ -534,7 +782,7 @@
                 vitorias: v,
                 derrotas: d,
                 pontos: v * 3
-            });
+            }, { merge: true });
         }
 
         async function carregarPartidas() {
