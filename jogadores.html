@@ -21,7 +21,7 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Centraliza todos os filhos horizontalmente */
             justify-content: space-between;
             position: relative;
             transition: transform 0.2s, border-color 0.2s;
@@ -35,12 +35,14 @@
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
+            object-position: center; 
             border: 2px solid var(--red-primary);
             background: var(--bg-main);
+            /* Removemos margens automáticas ou fixas que pudessem entortar */
+            margin: 0 auto 1rem auto; 
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             color: var(--red-primary);
             font-size: 1.8rem;
