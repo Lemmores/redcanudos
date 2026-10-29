@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogadores · RED CANUDOS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .player-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .player-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--red-primary);
+        }
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--red-primary);
+            background: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: var(--red-primary);
+            font-size: 1.8rem;
+        }
+        .player-role-badge {
+            background: rgba(229,9,20,0.1);
+            color: var(--red-primary);
+            padding: 0.25rem 0.7rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0.4rem 0;
+            display: inline-block;
+        }
+        .player-team-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR PADRONIZADA -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-brand">
+                <img src="Logo Canudos.png" alt="RED Canudos Logo" class="nav-logo">
+                <span class="brand-name"><span class="red-text">RED</span> CANUDOS</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Início</a>
+                <a href="times.html">Times</a>
+                <a href="jogadores.html" class="active">Jogadores</a>
+                <a href="partidas.html">Partidas</a>
+                <a href="tabela.html">Tabela</a>
+                <a href="estatisticas.html">Estatísticas</a>
+                <a href="noticias.html">Notícias</a>
+                <a href="hall.html" style="color: var(--red-primary); font-weight: 800;"><i class="fa-solid fa-trophy"></i> Hall of Canudos</a>
+                <a href="regras.html">Regras</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="banner-hero">
+            <div class="banner-content">
+                <h1>JOGADORES DA LIGA</h1>
+                <p class="banner-subtitle">RED CANUDOS · O PLANTEL DE TODAS AS EQUIPES</p>
+            </div>
+        </div>
+
+        <section class="sidebar-card" style="margin-bottom: 2.5rem;">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-users"></i> FILTRAR JOGADORES</h2>
+            </div>
+
+            <!-- BARRA DE FILTROS E BUSCA -->
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; margin-bottom: 1.5rem;">
+                <input type="text" id="inputSearchPlayer" placeholder="Buscar por nick do jogador..." style="flex: 1; min-width: 220px; padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                
+                <select id="selectLane" style="padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                    <option value="TODAS">Todas as Lanes</option>
+                    <option value="TOP">TOP</option>
+                    <option value="JG">JG</option>
+                    <option value="MID">MID</option>
+                    <option value="ADC">ADC</option>
+                    <option value="SUP">SUP</option>
+                </select>
+
+                <select id="selectTeam" style="padding: 0.6rem 0.8rem; background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none;">
+                    <option value="TODOS">Todos os Times</option>
+                </select>
+            </div>
+
+            <!-- GRID DE JOGADORES -->
+            <div id="gridJogadores" class="players-grid">
+                <p class="loading-text">Carregando jogadores do campeonato...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>RED CANUDOS © 2026 · O TORNEIO DA MATILHA</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- INTEGRAÇÃO FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3g6QE7YBg0vEAYoCoZa4lI3hc2_C-J4Y",
+            authDomain: "canudos-200c7.firebaseapp.com",
+            projectId: "canudos-200c7",
+            storageBucket: "canudos-200c7.firebasestorage.app",
+            messagingSenderId: "1055281066343",
+            appId: "1:1055281066343:web:80afb45157dacbe503bfc2",
+            measurementId: "G-JEP4G8QFHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let listaGeralJogadores = [];
+        let timesDisponiveis = new Set();
+
+        async function carregarJogadoresDaLiga() {
+            const container = document.getElementById('gridJogadores');
+            const selectTeam = document.getElementById('selectTeam');
+
+            try {
+                const snap = await getDocs(collection(db, "tabela"));
+                if (snap.empty) {
+                    container.innerHTML = '<p class="empty-text">Nenhum time ou jogador cadastrado ainda.</p>';
+                    return;
+                }
+
+                listaGeralJogadores = [];
+                timesDisponiveis = new Set();
+
+                snap.forEach(docSnap => {
+                    const timeData = docSnap.data();
+                    const nomeTime = timeData.nome || docSnap.id;
+                    timesDisponiveis.add(nomeTime);
+
+                    if (timeData.plantel && Array.isArray(timeData.plantel)) {
+                        timeData.plantel.forEach(j => {
+                            listaGeralJogadores.push({
+                                nick: j.nick || 'Desconhecido',
+                                funcao: (j.funcao || 'TITULAR').toUpperCase().trim(),
+                                opgg: j.opgg || '',
+                                fotoUrl: j.fotoUrl || '',
+                                time: nomeTime
+                            });
+                        });
+                    }
+                });
+
+                // Preenche o select de times
+                selectTeam.innerHTML = '<option value="TODOS">Todos os Times</option>';
+                timesDisponiveis.forEach(t => {
+                    selectTeam.innerHTML += `<option value="${t}">${t}</option>`;
+                });
+
+                renderizarJogadores();
+
+            } catch (err) {
+                console.error("Erro ao carregar jogadores:", err);
+                container.innerHTML = '<p class="empty-text">Erro ao carregar jogadores do campeonato.</p>';
+            }
+        }
+
+        function renderizarJogadores() {
+            const container = document.getElementById('gridJogadores');
+            const searchVal = document.getElementById('inputSearchPlayer').value.toLowerCase().trim();
+            const laneVal = document.getElementById('selectLane').value;
+            const teamVal = document.getElementById('selectTeam').value;
+
+            let filtrados = listaGeralJogadores.filter(j => {
+                const matchNick = j.nick.toLowerCase().includes(searchVal);
+                const matchLane = (laneVal === 'TODAS') || j.funcao.includes(laneVal);
+                const matchTeam = (teamVal === 'TODOS') || (j.time === teamVal);
+                return matchNick && matchLane && matchTeam;
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = '<p class="empty-text">Nenhum jogador encontrado com esses filtros.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtrados.forEach(j => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+
+                let avatarHtml = '';
+                if (j.fotoUrl && j.fotoUrl.trim() !== '') {
+                    avatarHtml = `<img src="${j.fotoUrl}" alt="${j.nick}" class="player-avatar">`;
+                } else {
+                    avatarHtml = `<div class="player-avatar"><i class="fa-solid fa-user"></i></div>`;
+                }
+
+                let opggBtn = '';
+                if (j.opgg && j.opgg.trim() !== '') {
+                    opggBtn = `<a href="${j.opgg}" target="_blank" style="display: inline-block; margin-top: 1rem; background: #31313c; color: #5383e8; border: 1px solid #5383e855; padding: 0.35rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-decoration: none;"><i class="fa-solid fa-external-link-alt"></i> OP.GG</a>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        ${avatarHtml}
+                        <span class="player-team-name"><i class="fa-solid fa-shield-halved"></i> ${j.time}</span>
+                        <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 0.2rem;">${j.nick}</h3>
+                        <span class="player-role-badge">${j.funcao || 'TITULAR'}</span>
+                    </div>
+                    <div>${opggBtn}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        document.getElementById('inputSearchPlayer').addEventListener('input', renderizarJogadores);
+        document.getElementById('selectLane').addEventListener('change', renderizarJogadores);
+        document.getElementById('selectTeam').addEventListener('change', renderizarJogadores);
+
+        window.addEventListener('DOMContentLoaded', carregarJogadoresDaLiga);
+    </script>
+</body>
+</html>
